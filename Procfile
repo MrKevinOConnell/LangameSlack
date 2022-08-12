@@ -1,1 +1,1 @@
-web: ts-node index.ts
+worker: node-ts index.js
