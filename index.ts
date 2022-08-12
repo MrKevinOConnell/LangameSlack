@@ -117,7 +117,7 @@ listener for events that occur in channels the bot is in
 app.event("message",async ({ message,client }) => {
   // Getting weird type error
   const finishedMessage = message as any
-  if(supportHero === defaultSupportHero) {
+  if(supportHero == defaultSupportHero) {
     const result = await client.chat.postEphemeral({
       channel: message.channel,
       user: finishedMessage.user,
