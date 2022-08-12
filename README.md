@@ -18,3 +18,9 @@
 ### Local Setup
 - yarn
 - `ts-node index.ts`
+
+### Commands
+
+- /disable - disables the selected user from recieving messages from the bot
+- /enable - enables the user to get messages from the bot again
+- /sethero - sets the current support hero, has 2 params, a mentioned slack member and a timezone (ex. 'America/New_York'), the timezone cannot contain spaces.
