@@ -117,16 +117,16 @@ listener for events that occur in channels the bot is in
 app.event("message",async ({ message,client }) => {
   // Getting weird type error
   const finishedMessage = message as any
-  if(supportHero == defaultSupportHero) {
-    const result = await client.chat.postEphemeral({
-      channel: message.channel,
-      user: finishedMessage.user,
-      text: "There is no support hero available currently.",
-    });
-    return
-  }
     try {
-    if(!disabledUserIds.includes(finishedMessage.user)) {
+    if(JSON.stringify(supportHero) === JSON.stringify(defaultSupportHero)) {
+        const result = await client.chat.postEphemeral({
+          channel: message.channel,
+          user: finishedMessage.user,
+          text: "There is no support hero available currently.",
+        });
+        return
+      }
+    else if(!disabledUserIds.includes(finishedMessage.user)) {
     const msg  = `It looks like you're asking the community for help. Our Support Hero this week is ${supportHero.slackName}, who is based in ${supportHero.timezone}. We recommend checking <https://posthog.com/questions|our support site> to see if your question has already been answered - but, if not, we'll respond <https://posthog.com/handbook/engineering/support-hero#prioritizing-requests|as quickly as we can>.`
     const result = await client.chat.postEphemeral({
       channel: message.channel,
