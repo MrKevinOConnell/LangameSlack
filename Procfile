@@ -1,0 +1,1 @@
+web: yarn && node index.ts
