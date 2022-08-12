@@ -122,7 +122,7 @@ app.event("message",async ({ message,client }) => {
         const result = await client.chat.postEphemeral({
           channel: message.channel,
           user: finishedMessage.user,
-          text: "There is no support hero available currently.",
+          text: "There is no Support Hero available currently.",
         });
         return
       }
