@@ -122,12 +122,12 @@ app.event("message",async ({ message,client }) => {
         const result = await client.chat.postEphemeral({
           channel: message.channel,
           user: finishedMessage.user,
-          text: "There is no Support Hero available currently.",
+          text: "You're asking the community for help. We recommend checking <https://posthog.com/questions|our support site> to see if your question has already been asked. There's no Support Hero currently available.",
         });
         return
       }
     else if(!disabledUserIds.includes(finishedMessage.user)) {
-    const msg  = `It looks like you're asking the community for help. Our Support Hero this week is ${supportHero.slackName}, who is based in ${supportHero.timezone}. We recommend checking <https://posthog.com/questions|our support site> to see if your question has already been answered - but, if not, we'll respond <https://posthog.com/handbook/engineering/support-hero#prioritizing-requests|as quickly as we can>.`
+    const msg  = `You're asking the community for help. We recommend checking <https://posthog.com/questions|our support site> to see if your question has already been asked - but, if not, we'll respond <https://posthog.com/handbook/engineering/support-hero#prioritizing-requests|as quickly as we can>. Our Support Hero this week is ${supportHero.slackName}, based in ${supportHero.timezone}.`
     const result = await client.chat.postEphemeral({
       channel: message.channel,
       user: finishedMessage.user,
