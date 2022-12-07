@@ -8,7 +8,7 @@
 - On the basic information tab, you will find your signing secret, which will be our signingSecret env variable
 - On the same tab, create a app-level token that has both authorizations:read and connections:write permissions, the token that results will be our appToken env variable.
 - Go to the OAuth and permissions tab and copy the "Bot User OAuth Token", place that token under the OAuthToken env variable
-- Go to the Slash commands tab and create three commands: /g, /settings and /g. Set the description for each to whatever is wanted
+- Go to the Slash commands tab and create three commands: /g, and /settings. Set the description for each to whatever is wanted
 - Click on Socket Mode and enable the slider next to "Enable Socket Mode"
 - Go to the Install App tab and click "Reinstall to Workspace" to add the bot to the workspace
 - Finally, go into the channel where you want the bot to function and enter /invite @Your-App-Name.
