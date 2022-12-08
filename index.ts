@@ -20,7 +20,7 @@ const app = new App({
     appToken: process.env.appToken
 });
 
-let pattern = "*/10 * * * *"
+let pattern = "*/2 * * * *"
 
 const generateRooms  = async () => {
   try {
@@ -31,35 +31,38 @@ return channel.name == 'langame'
     console.log("channel",channel)
     if(channel) {
     let members =(await app.client.conversations.members({ channel })).members
-      
     members = members && members.filter((member) => {
       return member != 'U04DDC2LH3R'
-    })
+    }).sort()
+   
     console.log("members",members)
-    
+    const lastMember = members && members.length %2 !== 0 ? members.pop() : null
     const pairs = result(members as string[])
+    
+    if(lastMember) {
+      pairs[pairs.length - 1] = [...pairs[pairs.length -  1],lastMember]
+      console.log("pairs",pairs)
+    }
     for(const pair of pairs) {
-      let name = `test-${moment(new Date()).format("l").toString().replace(/\//g, '-')}`
-      const topic = await (await generateLine(['philosophy']))
+      let name = `${moment(new Date()).format("l").toString().replace(/\//g, '-')}`
+      const topic = (await generateLine(['philosophy']))
       if(topic) {
       for(const person of pair) {
         const userInfo = await app.client.users.info({user: person})
         name = name + userInfo.user?.name as string
       }
-      name = name.replace(' ','-').toLowerCase()
+      name = name.replace(' ','-').replace(/\./g,'').toLowerCase()
       name.slice(0, -1);
      let tempName = (' ' + name).slice(1);
      let number = 0
-      console.log("tempname",tempName)
       const channelNames = channels && channels.map((channel)=> channel.name)
       console.log("channel names",channelNames)
       while(channelNames && channelNames.includes(tempName)) {
-        console.log("WHILE LOOP",tempName)
         tempName = name + "-" + number
         number = number + 1;
       }
-      console.log("TEMPNAME",tempName)
       name = tempName
+      console.log("FINAL NAME",name)
       const room = (await app.client.conversations.create({ name, is_private: true }))
       
       const channel = room && room.channel ? room.channel.id : null
