@@ -20,7 +20,7 @@ const app = new App({
     appToken: process.env.appToken
 });
 
-let pattern = "*/2 * * * *"
+let pattern = "0 */3 * * *"
 
 const generateRooms  = async () => {
   try {
