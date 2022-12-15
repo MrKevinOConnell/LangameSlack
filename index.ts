@@ -32,7 +32,7 @@ const supabase = createClient(
     },
   })
 
-let pattern = "*/2 * * * *"
+let pattern = "0 */8 * * *"
 
 const generateRooms  = async () => {
   try {
