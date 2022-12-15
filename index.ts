@@ -4,6 +4,9 @@ import axios from 'axios'
 import { convertTZ, result } from "./utils";
 import * as cron from 'node-schedule';
 import moment from 'moment';
+import { createClient } from "@supabase/supabase-js";
+
+
 const generateLine = async (topics: string[]): Promise<string> => {
   const key = process.env.API_KEY;
   const response = await axios.post(
@@ -19,8 +22,17 @@ const app = new App({
     socketMode:true,
     appToken: process.env.appToken
 });
+const supabase = createClient(
+  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_KEY as string,{
+    realtime: {
+      params: {
+        eventsPerSecond: 10,
+      },
+    },
+  })
 
-let pattern = "0 */6 * * *"
+let pattern = "*/2 * * * *"
 
 const generateRooms  = async () => {
   try {
@@ -69,7 +81,38 @@ return channel.name == 'langame'
       if(channel) {
         await app.client.conversations.setTopic({channel,topic})
         app.client.conversations.invite({channel,users: pair.join()})
+        const result = await app.client.chat.postMessage({
+          channel: channel,
+          text: topic,
+          attachments: [
+              {
+                  text: "Did you like the line generated?",
+                  fallback: "Error rating line!",
+                  callback_id: "line_result",
+                  color: "#3AA3E3",
+                  actions: [
+                      {
+                          name: "yes",
+                          text: "Yes",
+                          type: "button",
+                          value: "1"
+                      },
+                      {
+                          name: "no",
+                          text: "No",
+                          style: "danger",
+                          type: "button",
+                          value: "0",
+                      }
+                  ]
+              }
+          ]
+        });
       }
+     
+      
+
+
     }
     }
     }
@@ -288,5 +331,31 @@ app.command("/settings", async ({ command, ack,client}) => {
       console.log('error',error)
     }
   });
+
+  
+  app.action({type: "interactive_message", callback_id: 'line_result'},  async ({ body, client, ack, logger }) => {
+    await ack();
+      const action = body.actions[0] as any
+      const rating = action.value
+      const team_id = body.team?.id
+      const user_id = body.user.id
+      const text = body.original_message && body.original_message.text
+      const categories = ['philosophy']
+      
+      const { data, error: addUserError } = await supabase
+      .from('slackbot')
+      .insert([
+        {user_id, question: text, categories, rating, team_id}
+      ])
+      if(addUserError) {
+        console.log("ERROR WHEN RATING CARD", addUserError.message)
+      }
+      client.chat.update({channel: body.channel.id, ts: body.message_ts as string, text, attachments: [{
+        text: "Thank you for the feedback!"
+      }] 
+      })
+    // Update the message to reflect the action
+  });
+
  
 app.start(3000)
